@@ -30,7 +30,7 @@ class Student implements Serializable {
 public class StudentFileIO {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Student[] students = new Student[3];
+        Student1[] students = new Student1[3];
 
         for (int i = 0; i < students.length; i++) {
             System.out.print("Enter student ID: ");
@@ -42,40 +42,43 @@ public class StudentFileIO {
             System.out.print("Enter student score: ");
             int score = Integer.parseInt(scanner.nextLine());
 
-            students[i] = new Student(id, name, score);
+            students[i] = new Student1(id, name, score);
         }
 
-        // Write Student objects to file
+        
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream("exam5.dat"))) {
-            for (Student student : students) {
+            for (Student1 student : students) {
                 outputStream.writeObject(student);
             }
-            System.out.println("Student objects written to the file.");
-        } catch (IOException e) {
-            e.printStackTrace();
+            
+        } catch (FileNotFoundException ex) { 
+            Logger.getLogger(StudentFileIO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(StudentFileIO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // Read Student objects from file and calculate average score
-        double totalScore = 0;
+       
+        
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("exam5.dat"))) {
-            for (Student student : students) {
-                student = (Student) inputStream.readObject();
+            double totalScore = 0;
+            for (Student1 student : students) {
+                student = (Student1) inputStream.readObject();
                 totalScore += student.getScore();
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (students.length > 0) {
             double averageScore = totalScore / students.length;
-            System.out.println("Student array read from file:");
-            for (Student student : students) {
+            System.out.println(averageScore);
+            for (Student1 student : students) {
                 System.out.println(student);
             }
-            System.out.println("Average score: " + averageScore);
-        } else {
-            System.out.println("No students read from the file.");
+        } catch (FileNotFoundException ex) { 
+            Logger.getLogger(StudentFileIO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(StudentFileIO.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(StudentFileIO.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+       
 
         scanner.close();
     }
